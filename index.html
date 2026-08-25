@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="DocuFlow - Distraction-free Documentation & SOP Builder with real-time Markdown preview, document telemetry, and operational templates.">
+  <title>DocuFlow | Documentation &amp; SOP Builder</title>
+
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232563EB' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z'/%3E%3Cpolyline points='14 2 14 8 20 8'/%3E%3Cline x1='16' y1='13' x2='8' y2='13'/%3E%3Cline x1='16' y1='17' x2='8' y2='17'/%3E%3Cpolyline points='10 9 9 9 8 9'/%3E%3C/svg%3E">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/styles.css">
+  
+  <link rel="stylesheet" href="css/print.css" media="print">
+
+  <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.2/dist/purify.min.js"></script>
+</head>
+<body class="app-body">
+  <header class="app-header" role="banner">
+    <div class="header-inner">
+      <div class="brand-group">
+        <a href="./" class="brand-link" aria-label="DocuFlow Home">
+          <svg class="brand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+            <polyline points="10 9 9 9 8 9"></polyline>
+          </svg>
+          <span class="brand-name">DocuFlow</span>
+        </a>
+        <span class="brand-badge" aria-label="Version 1.0.0">SOP ENGINE</span>
+      </div>
+
+      <nav class="toolbar" aria-label="Markdown Formatting Toolbar">
+        <div class="toolbar-group" role="group" aria-label="History">
+          <button type="button" class="tool-btn" id="btn-undo" data-action="undo" aria-label="Undo edit" title="Undo (Ctrl+Z)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M9 14L4 9l5-5"></path>
+              <path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5v0a5.5 5.5 0 0 1-5.5 5.5H11"></path>
+            </svg>
+          </button>
+          <button type="button" class="tool-btn" id="btn-redo" data-action="redo" aria-label="Redo edit" title="Redo (Ctrl+Y)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="m15 14 5-5-5-5"></path>
+              <path d="M20 9H9.5A5.5 5.5 0 0 0 4 14.5v0A5.5 5.5 0 0 0 9.5 20H13"></path>
+            </svg>
+          </button>
+        </div>
+
+        <div class="toolbar-divider" aria-hidden="true"></div>
+
+        <div class="toolbar-group" role="group" aria-label="Headings">
+          <button type="button" class="tool-btn text-glyph-btn" id="btn-h1" data-action="h1" aria-label="Insert Heading 1" title="Heading 1 (#)">
+            <span>H1</span>
+          </button>
+          <button type="button" class="tool-btn text-glyph-btn" id="btn-h2" data-action="h2" aria-label="Insert Heading 2" title="Heading 2 (##)">
+            <span>H2</span>
+          </button>
+          <button type="button" class="tool-btn text-glyph-btn" id="btn-h3" data-action="h3" aria-label="Insert Heading 3" title="Heading 3 (###)">
+            <span>H3</span>
+          </button>
+        </div>
+
+        <div class="toolbar-divider" aria-hidden="true"></div>
+
+        <div class="toolbar-group" role="group" aria-label="Text Formatting">
+          <button type="button" class="tool-btn" id="btn-bold" data-action="bold" aria-label="Bold text" title="Bold (**text**)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M6 4h8a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"></path>
+              <path d="M6 12h9a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"></path>
+            </svg>
+          </button>
+          <button type="button" class="tool-btn" id="btn-italic" data-action="italic" aria-label="Italic text" title="Italic (*text*)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="19" y1="4" x2="10" y2="4"></line>
+              <line x1="14" y1="20" x2="5" y2="20"></line>
+              <line x1="15" y1="4" x2="9" y2="20"></line>
+            </svg>
+          </button>
+        </div>
+
+        <div class="toolbar-divider" aria-hidden="true"></div>
+
+        <div class="toolbar-group" role="group" aria-label="SOP Structures">
+          <button type="button" class="tool-btn" id="btn-checklist" data-action="checklist" aria-label="Insert Task Checklist" title="Task Checklist (- [ ])">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M9 11l3 3L22 4"></path>
+              <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+            </svg>
+          </button>
+          <button type="button" class="tool-btn" id="btn-table" data-action="table" aria-label="Insert Markdown Table" title="Table Structure">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+              <line x1="3" y1="9" x2="21" y2="9"></line>
+              <line x1="3" y1="15" x2="21" y2="15"></line>
+              <line x1="12" y1="3" x2="12" y2="21"></line>
+            </svg>
+          </button>
+          <button type="button" class="tool-btn" id="btn-callout" data-action="callout" aria-label="Insert Callout Note" title="Callout Note (> **Note:**)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="16" x2="12" y2="12"></line>
+              <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+          </button>
+          <button type="button" class="tool-btn" id="btn-code" data-action="code" aria-label="Insert Code Block" title="Code Block (```)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="16 18 22 12 16 6"></polyline>
+              <polyline points="8 6 2 12 8 18"></polyline>
+            </svg>
+          </button>
+        </div>
+      </nav>
+
+      <div class="actions-group">
+        <div class="template-selector-wrap">
+          <label for="template-select" class="visually-hidden">Choose SOP Template</label>
+          <div class="select-wrapper">
+            <svg class="select-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+            </svg>
+            <select id="template-select" class="template-select" aria-label="Select Starter SOP Template">
+              <option value="" disabled selected>Starter Templates</option>
+              <option value="sop">Standard Operating Procedure (SOP)</option>
+              <option value="blank-sop">Blank Standard Operating Procedure (SOP)</option>
+              <option value="onboarding">Client Onboarding / Knowledge Base</option>
+              <option value="runbook">Technical Bug Report / Runbook</option>
+            </select>
+            <svg class="select-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </div>
+        </div>
+
+        <div class="toolbar-divider" aria-hidden="true"></div>
+
+        <div class="export-group" role="group" aria-label="Export Actions">
+          <div class="export-dropdown-wrapper">
+            <button type="button" class="action-btn export-trigger-btn" id="btn-export-dropdown" aria-haspopup="true" aria-expanded="false" aria-controls="export-dropdown-menu" title="Export Document in Multiple Formats">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              <span class="btn-text">Export</span>
+              <svg class="dropdown-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+
+            <div class="export-menu" id="export-dropdown-menu" role="menu" aria-label="Export Format Options" hidden>
+              <div class="export-menu-section-header">Text &amp; Editable</div>
+              <button type="button" class="export-menu-item" id="btn-download-md" role="menuitem" data-format="md">
+                <span class="format-badge badge-md">.MD</span>
+                <div class="format-info">
+                  <span class="format-name">Markdown</span>
+                  <span class="format-desc">Raw GitHub-flavored markdown</span>
+                </div>
+              </button>
+              <button type="button" class="export-menu-item" id="btn-download-html" role="menuitem" data-format="html">
+                <span class="format-badge badge-html">.HTML</span>
+                <div class="format-info">
+                  <span class="format-name">HTML Document</span>
+                  <span class="format-desc">Standalone, styled web page</span>
+                </div>
+              </button>
+              <button type="button" class="export-menu-item" id="btn-download-rtf" role="menuitem" data-format="rtf">
+                <span class="format-badge badge-rtf">.RTF</span>
+                <div class="format-info">
+                  <span class="format-name">Rich Text</span>
+                  <span class="format-desc">Formatted for Word &amp; Docs</span>
+                </div>
+              </button>
+
+              <div class="export-menu-divider" role="separator"></div>
+
+              <div class="export-menu-section-header">Specialized Operations</div>
+              <button type="button" class="export-menu-item" id="btn-download-json" role="menuitem" data-format="json">
+                <span class="format-badge badge-json">.JSON</span>
+                <div class="format-info">
+                  <span class="format-name">Structured Data</span>
+                  <span class="format-desc">AST sections, tasks &amp; metrics</span>
+                </div>
+              </button>
+              <button type="button" class="export-menu-item" id="btn-download-csv" role="menuitem" data-format="csv">
+                <span class="format-badge badge-csv">.CSV</span>
+                <div class="format-info">
+                  <span class="format-name">Spreadsheet / Audit</span>
+                  <span class="format-desc">Checklists &amp; operational tables</span>
+                </div>
+              </button>
+            </div>
+          </div>
+          
+          <button type="button" class="action-btn" id="btn-copy-html" aria-label="Copy Rendered HTML to Clipboard" title="Copy clean HTML">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+            <span class="btn-text">Copy HTML</span>
+          </button>
+          
+          <button type="button" class="action-btn" id="btn-print-doc" aria-label="Print or Export as PDF" title="Print / PDF Preview">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="6 9 6 2 18 2 18 9"></polyline>
+              <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+              <rect x="6" y="14" width="12" height="8"></rect>
+            </svg>
+            <span class="btn-text">Print / PDF</span>
+          </button>
+        </div>
+
+        <div class="toolbar-divider" aria-hidden="true"></div>
+
+        <button type="button" class="theme-toggle-btn" id="btn-theme-toggle" aria-label="Toggle Light and Dark Mode" title="Toggle Theme">
+          <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+          <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="mobile-view-tabs" role="tablist" aria-label="Editor and Preview Views">
+      <button type="button" class="view-tab active" id="tab-editor" role="tab" aria-selected="true" aria-controls="editor-pane">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 20h9"></path>
+          <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+        </svg>
+        <span>Editor</span>
+      </button>
+      <button type="button" class="view-tab" id="tab-preview" role="tab" aria-selected="false" aria-controls="preview-pane">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+          <circle cx="12" cy="12" r="3"></circle>
+        </svg>
+        <span>Preview</span>
+      </button>
+    </div>
+  </header>
+
+  <aside class="info-banner" id="info-banner" aria-label="About DocuFlow">
+    <div class="info-banner-inner">
+      <div class="info-content">
+        <span class="info-badge">ABOUT</span>
+        <p class="info-text">
+          DocuFlow is a specialized template builder and markdown editor designed for creating, previewing, and exporting professional Standard Operating Procedures (SOPs), technical runbooks, and operational guides.
+        </p>
+      </div>
+      <button type="button" class="info-dismiss-btn" id="btn-dismiss-banner" aria-label="Dismiss banner" title="Dismiss announcement">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+  </aside>
+
+  <main class="workspace-main" id="workspace-main">
+    <section class="pane editor-pane is-active" id="editor-pane" aria-labelledby="editor-heading">
+      <header class="pane-header">
+        <div class="pane-title-wrap">
+          <h2 id="editor-heading" class="pane-title">MARKDOWN EDITOR</h2>
+          <span class="pane-tag">SOURCE</span>
+        </div>
+        <div class="pane-actions">
+          <button type="button" class="pane-action-btn" id="btn-clear-editor" aria-label="Clear Editor Text" title="Clear Editor">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="3 6 5 6 21 6"></polyline>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            </svg>
+            <span class="pane-action-label">Clear</span>
+          </button>
+        </div>
+      </header>
+
+      <div class="editor-body">
+        <textarea 
+          id="editor-textarea" 
+          class="editor-textarea" 
+          placeholder="# SOP Title&#10;&#10;> **Objective:** Define the primary operational purpose.&#10;&#10;## 1. Prerequisites&#10;- [ ] Checklist item 1&#10;- [ ] Checklist item 2&#10;&#10;## 2. Step-by-Step Procedure&#10;1. First operational step...&#10;2. Second operational step..." 
+          spellcheck="false" 
+          aria-label="Markdown Input Area" 
+          autocomplete="off" 
+          autocapitalize="off"></textarea>
+      </div>
+    </section>
+
+    <div class="pane-splitter" id="pane-splitter" aria-hidden="true"></div>
+
+    <section class="pane preview-pane" id="preview-pane" aria-labelledby="preview-heading">
+      <header class="pane-header">
+        <div class="pane-title-wrap">
+          <h2 id="preview-heading" class="pane-title">LIVE PREVIEW</h2>
+          <span class="pane-tag preview-tag">SOP VIEW</span>
+        </div>
+        <div class="pane-actions">
+          <button type="button" class="pane-action-btn" id="btn-scroll-top" aria-label="Scroll to top of preview" title="Back to Top">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="18 15 12 9 6 15"></polyline>
+            </svg>
+            <span class="pane-action-label">Top</span>
+          </button>
+        </div>
+      </header>
+
+      <div class="preview-body" id="preview-scroll-viewport">
+        <article id="preview-container" class="preview-container" aria-live="polite" aria-label="Rendered Document Content">
+          <div class="preview-placeholder">
+            <div class="placeholder-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+              </svg>
+            </div>
+            <h3 class="placeholder-title">Standard Operating Procedure Preview</h3>
+            <p class="placeholder-desc">Start typing in the Markdown editor or select a starter template from the toolbar to generate formatted documentation in real time.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="telemetry-bar" id="telemetry-bar" role="status" aria-label="Document Telemetry &amp; System Status">
+    <div class="telemetry-metrics">
+      <div class="metric-item">
+        <span class="metric-label">Words:</span>
+        <strong id="telemetry-words" class="metric-value">0</strong>
+      </div>
+      <div class="metric-separator metric-chars-separator" aria-hidden="true">/</div>
+      <div class="metric-item metric-chars-item">
+        <span class="metric-label">Characters:</span>
+        <strong id="telemetry-chars" class="metric-value">0</strong>
+      </div>
+      <div class="metric-separator" aria-hidden="true">/</div>
+      <div class="metric-item">
+        <span class="metric-label">Est. Read Time:</span>
+        <strong id="telemetry-reading-time" class="metric-value">0 min</strong>
+      </div>
+    </div>
+
+    <div class="telemetry-status">
+      <span class="status-pulse-dot" id="save-status-dot" aria-hidden="true"></span>
+      <span class="status-label" id="save-status-text">Draft Ready</span>
+    </div>
+  </footer>
+
+  <div class="modal-backdrop" id="modal-template-confirm" role="dialog" aria-modal="true" aria-labelledby="modal-confirm-title" aria-describedby="modal-confirm-desc" hidden>
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-icon-badge" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+            <line x1="12" y1="9" x2="12" y2="13"></line>
+            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+          </svg>
+        </div>
+        <div class="modal-text-group">
+          <h3 id="modal-confirm-title" class="modal-title">Replace Current Document?</h3>
+          <p id="modal-confirm-desc" class="modal-desc">Loading this template will replace your current editor content. Any unsaved changes in your document will be overwritten.</p>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="modal-btn btn-modal-cancel" id="btn-modal-cancel">Cancel</button>
+        <button type="button" class="modal-btn btn-modal-proceed" id="btn-modal-proceed">Proceed &amp; Replace</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
