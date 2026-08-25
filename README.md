@@ -16,7 +16,7 @@
 
 ---
 
-## 📌 Overview
+## Overview
 
 **DocuFlow** is a client-side Markdown authoring environment engineered specifically for operations leads, technical writers, site reliability engineers (SREs), and virtual assistants. It bridges the gap between raw text editing and publication-ready Standard Operating Procedures (SOPs), knowledge base guides, and incident runbooks.
 
@@ -28,7 +28,7 @@ Unlike generic note-taking apps, DocuFlow emphasizes:
 
 ---
 
-## ⚡ Key Features
+## Key Features
 
 ### 1. Real-Time Markdown Parsing & Hardened Security
 * **Sub-16ms Parsing Pipeline:** Powered by `Marked.js` configured with GitHub Flavored Markdown (GFM), table generation, task lists, and natural line-breaks.
@@ -74,7 +74,7 @@ DocuFlow features an accessible dropdown menu providing instant, zero-dependency
 
 ---
 
-## 🏛️ System Architecture
+## System Architecture
 
 ```
 docuflow/
@@ -121,7 +121,7 @@ docuflow/
 
 ---
 
-## 🔒 Security Architecture
+## Security Architecture
 
 Client-side Markdown previewers that use `innerHTML` are inherently vulnerable to Cross-Site Scripting (XSS). DocuFlow enforces a strict defense-in-depth security model:
 
@@ -137,7 +137,7 @@ Client-side Markdown previewers that use `innerHTML` are inherently vulnerable t
 
 ---
 
-## 🎨 Design System & Typography
+## Design System & Typography
 
 DocuFlow adheres to the **Swiss Grid & Technical Documentation** design aesthetic:
 
@@ -153,14 +153,14 @@ DocuFlow adheres to the **Swiss Grid & Technical Documentation** design aestheti
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 DocuFlow requires **zero compilation, zero build steps, and zero dependencies**.
 
 ### Quick Start
 1. Clone or download the repository:
    ```bash
-   git clone https://github.com/your-username/docuflow.git
+   git clone https://github.com/zencps/docuflow.git
    cd docuflow
    ```
 2. Open `index.html` directly in any modern browser:
@@ -176,7 +176,7 @@ DocuFlow requires **zero compilation, zero build steps, and zero dependencies**.
 
 ---
 
-## 🧪 Automated Verification Suite
+## Automated Verification Suite
 
 DocuFlow includes an automated verification script (`verify_sprint4.js`) that connects to headless Chromium/Edge via the **Chrome DevTools Protocol (CDP)** to test all acceptance criteria:
 
@@ -201,6 +201,6 @@ node scratch/verify_sprint4.js
 
 ---
 
-## 📄 License
+## License
 
 This project is open-source and available under the [MIT License](LICENSE).
